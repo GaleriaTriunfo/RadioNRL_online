@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Minha Rádio Online</title>
+    <title>Tech News Brasil - Notícias Atualizadas</title>
     <style>
         body { 
             background-color: #121212; 
@@ -10,81 +10,177 @@
             text-align: center; 
             font-family: Arial, sans-serif; 
             padding: 20px; 
+            margin: 0;
         }
         
-        h1 { color: #1db954; }
+        h1 { color: #1db954; margin-top: 20px; font-size: 32px; }
+        p.sub { color: #aaaaaa; margin-bottom: 30px; }
         
-        .menu-estacoes { margin-bottom: 20px; }
-        
-        .btn { 
-            background: #282828; 
-            color: white; 
-            padding: 10px 20px; 
-            border: 2px solid #1db954; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin: 5px; 
-        }
-        
-        .btn:hover { background: #1db954; color: black; }
-        
-        .video-container { margin-bottom: 20px; }
-        
-        /* Espaço do Patrocinador Fixo em 1200x628px */
+        /* Novo Espaço do Patrocinador Fixo em 900x500px */
         .box-anuncio { 
-            width: 1200px; 
-            height: 628px; 
-            border: 2px dashed #555; 
-            margin: 20px auto; 
+            width: 900px; 
+            height: 500px; 
+            border: 3px dashed #555; 
+            margin: 20px auto 40px auto; 
             background: #222; 
             position: relative; 
             overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .box-anuncio img { 
-            width: 1200px; 
-            height: 628px; 
+            width: 900px; 
+            height: 500px; 
             object-fit: cover;
+        }
+
+        .tag-anuncio {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.8);
+            color: #1db954;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        /* --- SEÇÃO DE NOTÍCIAS AUTOMÁTICAS --- */
+        .container-noticias {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 colunas de notícias */
+            gap: 25px;
+            padding: 20px 0;
+            text-align: left;
+        }
+
+        .card-noticia {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-noticia img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #2b2b2b;
+        }
+
+        .conteudo-noticia {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .titulo-noticia {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .resumo-noticia {
+            font-size: 13px;
+            color: #aaaaaa;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .btn-ler-mais {
+            color: #1db954;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: auto;
+        }
+
+        .btn-ler-mais:hover {
+            text-decoration: underline;
+        }
+
+        /* Mensagem de carregamento */
+        #status-carregamento {
+            font-size: 18px;
+            color: #1db954;
+            margin: 40px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Minha Rádio Online</h1>
-    <p>Selecione seu estilo musical favorito:</p>
-
-    <div class="menu-estacoes">
-        <button class="btn" onclick="tocar('classica')">Música Clássica</button>
-        <button class="btn" onclick="tocar('mpb')">MPB Clássicos</button>
-        <button class="btn" onclick="tocar('sertanejo')">Sertanejo Universitário</button>
-    </div>
-
-    <div class="video-container">
-        <iframe id="meu-player" width="640" height="360" src="https://www.youtube.com/embed/Rb0UmrCXGAc?autoplay=0&rel=0" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
-    </div>
+    <h1>Tech News Brasil</h1>
+    <p class="sub">As principais novidades sobre tecnologia no país, atualizadas automaticamente.</p>
 
     <div class="box-anuncio">
+        <span class="tag-anuncio">Patrocínio</span>
         <a href="https://www.google.com" target="_blank">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=628&fit=crop" alt="Patrocinador">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&h=500&fit=crop" alt="Espaço de Propaganda">
         </a>
     </div>
 
+    <div id="status-carregamento">Buscando notícias mais recentes...</div>
+    <div class="container-noticias" id="lista-noticias"></div>
+
     <script>
-        function tocar(estilo) {
-            var player = document.getElementById('meu-player');
-            var meuSite = window.location.href; 
+        // Função que busca notícias reais e atualizadas automaticamente usando uma API pública livre
+        // Usamos tópicos de tecnologia do Brasil
+        async function carregarNoticias() {
+            const container = document.getElementById('lista-noticias');
+            const status = document.getElementById('status-carregamento');
             
-            if (estilo === 'classica') {
-                // Vídeo fixo de Beethoven (Garantido, não sai do ar)
-                player.src = "https://www.youtube.com/embed/Rb0UmrCXGAc?autoplay=1&mute=1&origin=" + meuSite;
-            } else if (estilo === 'mpb') {
-                // Mix de MPB instrumental / Clássicos
-                player.src = "https://www.youtube.com/embed/4pS8fO_gHkU?autoplay=1&mute=1&origin=" + meuSite;
-            } else if (estilo === 'sertanejo') {
-                // Mix Sertanejo Antigo/Universitário
-                player.src = "https://www.youtube.com/embed/Z0p9vT_l_g0?autoplay=1&mute=1&origin=" + meuSite;
+            try {
+                // Buscando dados de tecnologia via feed convertido para JSON (Método leve e sem chaves pagas)
+                const resposta = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://g1.globo.com/dinamico/rss2/tecnologia/rss.xml');
+                const dados = await respuesta.json();
+                
+                // Remove a mensagem de "carregando"
+                status.style.display = 'none';
+                
+                if (dados.items && dados.items.length > 0) {
+                    // Limita em até 9 notícias na tela para não pesar o PC
+                    const noticias = dados.items.slice(0, 9); 
+                    
+                    noticias.forEach(item => {
+                        // Tenta pegar a imagem da notícia, se não tiver, usa uma padrão de tecnologia
+                        let imagem = item.enclosure.link || item.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=250&fit=crop';
+                        
+                        // Cria o cartão da notícia de forma dinâmica
+                        const card = document.createElement('div');
+                        card.className = 'card-noticia';
+                        card.innerHTML = `
+                            <img src="${imagem}" alt="Imagem da Notícia">
+                            <div class="conteudo-noticia">
+                                <p class="titulo-noticia">${item.title}</p>
+                                <p class="resumo-noticia">${item.description.replace(/<[^>]*>/g, '').substring(0, 120)}...</p>
+                                <a href="${item.link}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    status.innerText = 'Nenhuma notícia encontrada no momento.';
+                }
+                
+            } catch (erro) {
+                console.error('Erro ao buscar notícias:', erro);
+                status.innerText = 'Não foi possível carregar as notícias automaticamente. Tente atualizar a página.';
             }
         }
+
+        // Executa a função assim que o site abre
+        carregarNoticias();
     </script>
 </body>
 </html>
