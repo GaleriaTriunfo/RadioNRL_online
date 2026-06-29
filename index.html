@@ -30,17 +30,17 @@
         }
         
         .header-nexora-logo img {
-            max-width: 380px; /* Aumentado o tamanho do logotipo */
+            max-width: 380px; /* Tamanho do logotipo */
             height: auto;
             display: block;
         }
         
-        /* Espaço do Patrocinador Mantido em 600x250px */
+        /* Espaço do Patrocinador Ajustado para 600x250px com a Nova Imagem */
         .box-anuncio { 
             width: 600px; 
             height: 250px; 
             border: 3px dashed #555; 
-            background: #222; 
+            background: #000; 
             position: relative; 
             overflow: hidden; 
             display: flex;
@@ -50,10 +50,10 @@
             flex-shrink: 0;
         }
         
-        .Espaço anunciante img { 
+        .box-anuncio img { 
             width: 600px; 
             height: 250px; 
-            object-fit: cover;
+            object-fit: cover; /* Ajusta a imagem perfeitamente ao bloco */
         }
 
         .tag-anuncio {
@@ -66,6 +66,7 @@
             font-size: 12px;
             font-weight: bold;
             border-radius: 4px;
+            z-index: 10;
         }
 
         /* --- SEÇÃO DE NOTÍCIAS AUTOMÁTICAS --- */
@@ -147,7 +148,6 @@
 </head>
 <body>
 
-    <!-- Topo unificado: Logo Nexora maior à esquerda e Patrocinador à direita -->
     <div class="topo-container">
         <div class="header-nexora-logo">
             <img src="Nexora.png" alt="Nexora - Tecnologia que conecta o futuro">
@@ -155,15 +155,14 @@
 
         <div class="box-anuncio">
             <span class="tag-anuncio">Patrocínio</span>
-            <a href="https://www.google.com" target="_blank">
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=250&fit=crop" alt="Espaço de Propaganda">
+            <a href="https://wa.me/5561984912720" target="_blank" title="Anuncie Conosco">
+                <img src="Espaço anunciante.png" alt="Espaço de Patrocínio - Anuncie Aqui">
             </a>
         </div>
     </div>
 
-    <h2 class="titulo-secao">Últimas Atualizações Teconológicas</h2>
+    <h2 class="titulo-secao">Últimas Atualizações Tecnológicas</h2>
 
-    <!-- Feed de Notícias -->
     <div class="container-noticias" id="lista-noticias"></div>
 
     <script>
