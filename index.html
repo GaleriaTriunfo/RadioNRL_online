@@ -7,34 +7,39 @@
         body { 
             background-color: #121212; 
             color: white; 
-            text-align: center; 
             font-family: Arial, sans-serif; 
             padding: 0; 
             margin: 0;
         }
 
-        /* --- CABEÇALHO PROFISSIONAL NEXORA --- */
-        .header-nexora {
+        /* --- TOPO DUPLO: LOGO + PATROCINADOR --- */
+        .topo-container {
             background-color: #0b0c10;
-            padding: 30px 20px;
+            padding: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            margin-bottom: 30px;
             border-bottom: 2px solid #1db954;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px; /* Espaço entre o logo e o anúncio */
+            flex-wrap: wrap; /* Garante que quebre linha em telas muito pequenas */
         }
         
-        .header-nexora img {
-            max-width: 250px;
+        .header-nexora-logo {
+            flex: 0 1 auto;
+        }
+        
+        .header-nexora-logo img {
+            max-width: 380px; /* Aumentado o tamanho do logotipo */
             height: auto;
             display: block;
-            margin: 0 auto;
         }
         
-        /* Espaço do Patrocinador (600x250px) */
+        /* Espaço do Patrocinador Mantido em 600x250px */
         .box-anuncio { 
             width: 600px; 
             height: 250px; 
             border: 3px dashed #555; 
-            margin: 20px auto 40px auto; 
             background: #222; 
             position: relative; 
             overflow: hidden; 
@@ -42,6 +47,7 @@
             justify-content: center;
             align-items: center;
             border-radius: 6px;
+            flex-shrink: 0;
         }
         
         .box-anuncio img { 
@@ -63,13 +69,22 @@
         }
 
         /* --- SEÇÃO DE NOTÍCIAS AUTOMÁTICAS --- */
+        .titulo-secao {
+            text-align: center;
+            margin-top: 40px;
+            color: #1db954;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .container-noticias {
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
-            padding: 20px;
+            padding: 20px 20px 40px 20px;
             text-align: left;
         }
 
@@ -128,32 +143,30 @@
         .btn-ler-mais:hover {
             text-decoration: underline;
         }
-
-        #status-carregamento {
-            font-size: 18px;
-            color: #1db954;
-            margin: 40px;
-        }
     </style>
 </head>
 <body>
 
-    <div class="header-nexora">
-        <img src="Nexora.png" alt="Nexora - Tecnologia que conecta o futuro">
+    <!-- Topo unificado: Logo Nexora maior à esquerda e Patrocinador à direita -->
+    <div class="topo-container">
+        <div class="header-nexora-logo">
+            <img src="Nexora.png" alt="Nexora - Tecnologia que conecta o futuro">
+        </div>
+
+        <div class="box-anuncio">
+            <span class="tag-anuncio">Patrocínio</span>
+            <a href="https://www.google.com" target="_blank">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=250&fit=crop" alt="Espaço de Propaganda">
+            </a>
+        </div>
     </div>
 
-    <div class="box-anuncio">
-        <span class="tag-anuncio">Patrocínio</span>
-        <a href="https://www.google.com" target="_blank">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=250&fit=crop" alt="Espaço de Propaganda">
-        </a>
-    </div>
+    <h2 class="titulo-secao">Últimas Atualizações Teconológicas</h2>
 
-    <div id="status-carregamento">Buscando notícias de tecnologia...</div>
+    <!-- Feed de Notícias -->
     <div class="container-noticias" id="lista-noticias"></div>
 
     <script>
-        // Banco de dados alternativo de notícias pré-traduzidas para evitar bloqueios de servidores
         const noticiasSuporte = [
             { title: "Inteligência Artificial revoluciona a criação de softwares em 2026", summary: "Novas ferramentas de IA permitem que desenvolvedores programem sistemas complexos na metade do tempo estimado.", url: "https://g1.globo.com/tecnologia/", img: "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=400&h=250&fit=crop" },
             { title: "Redes 5G atingem cobertura recorde nas capitais do Brasil", summary: "Instalação de novas antenas avança e sinal de alta velocidade chega a mais bairros periféricos e regiões comerciais.", url: "https://tecnoblog.net/", img: "https://images.unsplash.com/photo-1562408590-e32931084e23?w=400&h=250&fit=crop" },
@@ -165,31 +178,21 @@
 
         function carregarNoticias() {
             const container = document.getElementById('lista-noticias');
-            const status = document.getElementById('status-carregamento');
             
-            try {
-                status.style.display = 'none';
+            noticiasSuporte.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-noticia';
                 
-                // Exibe exatamente as 6 notícias organizadas
-                noticiasSuporte.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card-noticia';
-                    
-                    card.innerHTML = `
-                        <img src="${item.img}" alt="Notícia">
-                        <div class="conteudo-noticia">
-                            <p class="titulo-noticia">${item.title}</p>
-                            <p class="resumo-noticia">${item.summary}</p>
-                            <a href="${item.url}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-                
-            } catch (erro) {
-                console.error(erro);
-                status.innerText = 'Erro ao carregar o portal. Tente atualizar.';
-            }
+                card.innerHTML = `
+                    <img src="${item.img}" alt="Notícia">
+                    <div class="conteudo-noticia">
+                        <p class="titulo-noticia">${item.title}</p>
+                        <p class="resumo-noticia">${item.summary}</p>
+                        <a href="${item.url}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         carregarNoticias();
