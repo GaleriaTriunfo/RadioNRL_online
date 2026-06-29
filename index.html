@@ -16,7 +16,7 @@
         h1 { color: #1db954; margin-top: 20px; font-size: 32px; }
         p.sub { color: #aaaaaa; margin-bottom: 30px; }
         
-        /* Espaço do Patrocinador Fixo em 900x500px */
+        /* Espaço do Patrocinador (600x250px) */
         .box-anuncio { 
             width: 600px; 
             height: 250px; 
@@ -53,7 +53,7 @@
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+            grid-template-columns: repeat(3, 1fr);
             gap: 25px;
             padding: 20px 0;
             text-align: left;
@@ -120,16 +120,16 @@
 <body>
 
     <h1>Tech News Brasil</h1>
-    <p class="sub">As principais novidades sobre tecnologia, atualizadas automaticamente via API.</p>
+    <p class="sub">As principais novidades sobre tecnologia, atualizadas automaticamente em português.</p>
 
     <div class="box-anuncio">
         <span class="tag-anuncio">Patrocínio</span>
         <a href="https://www.google.com" target="_blank">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&h=500&fit=crop" alt="Espaço de Propaganda">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=250&fit=crop" alt="Espaço de Propaganda">
         </a>
     </div>
 
-    <div id="status-carregamento">Buscando notícias de tecnologia...</div>
+    <div id="status-carregamento">Buscando notícias em português...</div>
     <div class="container-noticias" id="lista-noticias"></div>
 
     <script>
@@ -138,37 +138,43 @@
             const status = document.getElementById('status-carregamento');
             
             try {
-                // Nova API aberta de notícias de tecnologia sem restrição de CORS
-                const resposta = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=9');
-                const dados = await resposta.json();
+                // Buscando notícias em português (BR) filtradas para tecnologia/inovação
+                const resposta = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.b9.com.br/feed/');
+                const dados = await respuesta.json();
                 
                 status.style.display = 'none';
                 
-                if (dados.results && dados.results.length > 0) {
-                    dados.results.forEach(item => {
+                if (dados.items && dados.items.length > 0) {
+                    // Exibir exatamente 6 notícias na tela
+                    const noticiasExibir = dados.items.slice(0, 6);
+                    
+                    noticiasExibir.forEach(item => {
                         const card = document.createElement('div');
                         card.className = 'card-noticia';
                         
-                        // Garante uma imagem válida ou usa uma padrão de tecnologia
-                        let imagem = item.image_url || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=250&fit=crop';
+                        // Garante uma imagem de fundo caso o post original não envie uma mini
+                        let imagem = item.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=250&fit=crop';
+                        
+                        // Limpa tags HTML que possam vir no texto original do resumo
+                        let resumoLimpo = item.description.replace(/<[^>]*>/g, '').substring(0, 120);
                         
                         card.innerHTML = `
                             <img src="${imagem}" alt="Notícia">
                             <div class="conteudo-noticia">
                                 <p class="titulo-noticia">${item.title}</p>
-                                <p class="resumo-noticia">${item.summary ? item.summary.substring(0, 120) + '...' : 'Clique abaixo para ler os detalhes da cobertura completa.'}</p>
-                                <a href="${item.url}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
+                                <p class="resumo-noticia">${resumoLimpo}...</p>
+                                <a href="${item.link}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
                             </div>
                         `;
                         container.appendChild(card);
                     });
                 } else {
-                    status.innerText = 'Nenhuma notícia disponível no momento.';
+                    status.innerText = 'Nenhuma notícia em português disponível no momento.';
                 }
                 
             } catch (erro) {
                 console.error('Erro de requisição:', erro);
-                status.innerText = 'Erro ao conectar com o servidor de notícias. Tente atualizar a página.';
+                status.innerText = 'Erro ao conectar com o servidor de notícias brasileiras. Tente atualizar.';
             }
         }
 
