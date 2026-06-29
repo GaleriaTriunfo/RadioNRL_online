@@ -2,39 +2,87 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Teste de Rádio Online</title>
+    <title>Minha Rádio Online</title>
     <style>
-        body { background-color: #121212; color: white; text-align: center; font-family: Arial; padding: 20px; }
-        .btn { background: #1db954; color: black; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; margin: 5px; }
-        .box-anuncio { width: 1200px; height: 628px; border: 2px dashed #555; margin: 20px auto; background: #222; }
+        body { 
+            background-color: #121212; 
+            color: white; 
+            text-align: center; 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+        }
+        
+        h1 { color: #1db954; }
+        
+        .menu-estacoes { margin-bottom: 20px; }
+        
+        .btn { 
+            background: #282828; 
+            color: white; 
+            padding: 10px 20px; 
+            border: 2px solid #1db954; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin: 5px; 
+        }
+        
+        .btn:hover { background: #1db954; color: black; }
+        
+        .video-container { margin-bottom: 20px; }
+        
+        /* Espaço do Patrocinador Fixo em 1200x628px */
+        .box-anuncio { 
+            width: 1200px; 
+            height: 628px; 
+            border: 2px dashed #555; 
+            margin: 20px auto; 
+            background: #222; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        .box-anuncio img { 
+            width: 1200px; 
+            height: 628px; 
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Teste do Player</h1>
-    <p>Clique no botão abaixo para forçar o vídeo a carregar:</p>
+    <h1>Minha Rádio Online</h1>
+    <p>Selecione seu estilo musical favorito:</p>
 
-    <div>
-        <button class="btn" onclick="tocar('classica')">Ligar Rádio (Música Clássica)</button>
-        <button class="btn" onclick="tocar('sertanejo')">Mudar para Sertanejo</button>
+    <div class="menu-estacoes">
+        <button class="btn" onclick="tocar('classica')">Música Clássica</button>
+        <button class="btn" onclick="tocar('mpb')">MPB Clássicos</button>
+        <button class="btn" onclick="tocar('sertanejo')">Sertanejo Universitário</button>
     </div>
 
-    <br>
-    <iframe id="meu-player" width="640" height="360" src="https://www.youtube.com/embed/WJ3-F02-F_4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div class="video-container">
+        <iframe id="meu-player" width="640" height="360" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=0&rel=0" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
+    </div>
 
     <div class="box-anuncio">
-        <p style="padding-top: 280px; color: #888;">Espaço do Patrocinador (1200x628px)</p>
+        <a href="https://www.google.com" target="_blank">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=628&fit=crop" alt="Patrocinador">
+        </a>
     </div>
 
     <script>
         function tocar(estilo) {
             var player = document.getElementById('meu-player');
+            var meuSite = window.location.href; 
+            
             if (estilo === 'classica') {
-                // Vídeo de Música Clássica (Vivaldi)
-                player.src = "https://www.youtube.com/embed/WJ3-F02-F_4?autoplay=1";
-            } else {
-                // Vídeo de Sertanejo (Jorge e Mateus)
-                player.src = "https://www.youtube.com/embed/ePjTkU1Z9S0?autoplay=1";
+                // Live de Piano 24h (Livre para incorporar)
+                player.src = "https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&origin=" + meuSite;
+            } else if (estilo === 'mpb') {
+                // Mix de MPB instrumental / Clássicos
+                player.src = "https://www.youtube.com/embed/4pS8fO_gHkU?autoplay=1&mute=1&origin=" + meuSite;
+            } else if (estilo === 'sertanejo') {
+                // Mix Sertanejo Antigo/Universitário
+                player.src = "https://www.youtube.com/embed/Z0p9vT_l_g0?autoplay=1&mute=1&origin=" + meuSite;
             }
         }
     </script>
