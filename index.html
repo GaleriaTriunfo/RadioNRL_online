@@ -16,10 +16,10 @@
         h1 { color: #1db954; margin-top: 20px; font-size: 32px; }
         p.sub { color: #aaaaaa; margin-bottom: 30px; }
         
-        /* Novo Espaço do Patrocinador Fixo em 900x500px */
+        /* Espaço do Patrocinador Fixo em 900x500px */
         .box-anuncio { 
-            width: 900px; 
-            height: 500px; 
+            width: 600px; 
+            height: 250px; 
             border: 3px dashed #555; 
             margin: 20px auto 40px auto; 
             background: #222; 
@@ -31,8 +31,8 @@
         }
         
         .box-anuncio img { 
-            width: 900px; 
-            height: 500px; 
+            width: 600px; 
+            height: 250px; 
             object-fit: cover;
         }
 
@@ -53,7 +53,7 @@
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colunas de notícias */
+            grid-template-columns: repeat(3, 1fr); /* 3 colunas */
             gap: 25px;
             padding: 20px 0;
             text-align: left;
@@ -110,7 +110,6 @@
             text-decoration: underline;
         }
 
-        /* Mensagem de carregamento */
         #status-carregamento {
             font-size: 18px;
             color: #1db954;
@@ -121,7 +120,7 @@
 <body>
 
     <h1>Tech News Brasil</h1>
-    <p class="sub">As principais novidades sobre tecnologia no país, atualizadas automaticamente.</p>
+    <p class="sub">As principais novidades sobre tecnologia, atualizadas automaticamente via API.</p>
 
     <div class="box-anuncio">
         <span class="tag-anuncio">Patrocínio</span>
@@ -130,56 +129,49 @@
         </a>
     </div>
 
-    <div id="status-carregamento">Buscando notícias mais recentes...</div>
+    <div id="status-carregamento">Buscando notícias de tecnologia...</div>
     <div class="container-noticias" id="lista-noticias"></div>
 
     <script>
-        // Função que busca notícias reais e atualizadas automaticamente usando uma API pública livre
-        // Usamos tópicos de tecnologia do Brasil
         async function carregarNoticias() {
             const container = document.getElementById('lista-noticias');
             const status = document.getElementById('status-carregamento');
             
             try {
-                // Buscando dados de tecnologia via feed convertido para JSON (Método leve e sem chaves pagas)
-                const resposta = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://g1.globo.com/dinamico/rss2/tecnologia/rss.xml');
-                const dados = await respuesta.json();
+                // Nova API aberta de notícias de tecnologia sem restrição de CORS
+                const resposta = await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=9');
+                const dados = await resposta.json();
                 
-                // Remove a mensagem de "carregando"
                 status.style.display = 'none';
                 
-                if (dados.items && dados.items.length > 0) {
-                    // Limita em até 9 notícias na tela para não pesar o PC
-                    const noticias = dados.items.slice(0, 9); 
-                    
-                    noticias.forEach(item => {
-                        // Tenta pegar a imagem da notícia, se não tiver, usa uma padrão de tecnologia
-                        let imagem = item.enclosure.link || item.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=250&fit=crop';
-                        
-                        // Cria o cartão da notícia de forma dinâmica
+                if (dados.results && dados.results.length > 0) {
+                    dados.results.forEach(item => {
                         const card = document.createElement('div');
                         card.className = 'card-noticia';
+                        
+                        // Garante uma imagem válida ou usa uma padrão de tecnologia
+                        let imagem = item.image_url || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=250&fit=crop';
+                        
                         card.innerHTML = `
-                            <img src="${imagem}" alt="Imagem da Notícia">
+                            <img src="${imagem}" alt="Notícia">
                             <div class="conteudo-noticia">
                                 <p class="titulo-noticia">${item.title}</p>
-                                <p class="resumo-noticia">${item.description.replace(/<[^>]*>/g, '').substring(0, 120)}...</p>
-                                <a href="${item.link}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
+                                <p class="resumo-noticia">${item.summary ? item.summary.substring(0, 120) + '...' : 'Clique abaixo para ler os detalhes da cobertura completa.'}</p>
+                                <a href="${item.url}" target="_blank" class="btn-ler-mais">Ler notícia completa →</a>
                             </div>
                         `;
                         container.appendChild(card);
                     });
                 } else {
-                    status.innerText = 'Nenhuma notícia encontrada no momento.';
+                    status.innerText = 'Nenhuma notícia disponível no momento.';
                 }
                 
             } catch (erro) {
-                console.error('Erro ao buscar notícias:', erro);
-                status.innerText = 'Não foi possível carregar as notícias automaticamente. Tente atualizar a página.';
+                console.error('Erro de requisição:', erro);
+                status.innerText = 'Erro ao conectar com o servidor de notícias. Tente atualizar a página.';
             }
         }
 
-        // Executa a função assim que o site abre
         carregarNoticias();
     </script>
 </body>
